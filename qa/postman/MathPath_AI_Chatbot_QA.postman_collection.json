@@ -1,0 +1,73 @@
+{
+  "info": {
+    "name": "MathPath AI Chatbot QA",
+    "description": "Postman collection for testing MathPath AI chatbot backend endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/", "host": ["{{base_url}}"], "path": [""] }
+      }
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+      }
+    },
+    {
+      "name": "Chat - Overview",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"message\": \"What is MathPath?\"\n}" },
+        "url": { "raw": "{{base_url}}/chat", "host": ["{{base_url}}"], "path": ["chat"] }
+      }
+    },
+    {
+      "name": "Chat - Program Recommendation",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"message\": \"My child is 6 years old. Which program is suitable?\",\n  \"child_age\": \"6\"\n}" },
+        "url": { "raw": "{{base_url}}/chat", "host": ["{{base_url}}"], "path": ["chat"] }
+      }
+    },
+    {
+      "name": "Chat - Bridge Course",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"message\": \"My child is in Class 6. Is it too late to start abacus?\",\n  \"child_class\": \"Class 6\"\n}" },
+        "url": { "raw": "{{base_url}}/chat", "host": ["{{base_url}}"], "path": ["chat"] }
+      }
+    },
+    {
+      "name": "Create Lead",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"parent_name\": \"Test Parent\",\n  \"child_name\": \"Aarav\",\n  \"child_age\": \"8\",\n  \"child_class\": \"Class 3\",\n  \"phone\": \"+919999999999\",\n  \"email\": \"parent@example.com\",\n  \"preferred_mode\": \"hybrid\",\n  \"preferred_callback_time\": \"Tomorrow evening\",\n  \"main_concern\": \"Weak basics\",\n  \"message\": \"Interested in demo\",\n  \"session_id\": \"postman-qa-session\",\n  \"source\": \"postman_qa\",\n  \"consent_to_contact\": true\n}" },
+        "url": { "raw": "{{base_url}}/lead", "host": ["{{base_url}}"], "path": ["lead"] }
+      }
+    },
+    {
+      "name": "Admin Leads",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-Admin-Token", "value": "{{admin_token}}" }],
+        "url": { "raw": "{{base_url}}/admin/leads", "host": ["{{base_url}}"], "path": ["admin", "leads"] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "admin_token", "value": "change_me_admin_token" }
+  ]
+}

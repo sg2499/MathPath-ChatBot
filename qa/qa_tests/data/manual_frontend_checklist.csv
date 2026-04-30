@@ -1,0 +1,13 @@
+check_id,area,test_item,expected_result,status,notes
+UI-001,Launcher,MathPath logo appears in floating launcher,Logo is visible and not distorted,,
+UI-002,Launcher,Chat widget opens and closes smoothly,Widget opens/closes without layout break,,
+UI-003,Header,MathPath logo appears in header,Header branding is visible,,
+UI-004,Message,Bot avatar appears beside bot messages,Logo/avatar visible beside bot replies,,
+UI-005,Suggested Questions,Suggested question buttons appear on first load,Buttons are readable and clickable,,
+UI-006,Chat,User can send a custom question,Message appears in chat and bot responds,,
+UI-007,Lead Form,Lead form opens after demo/admission interest,Form fields render correctly,,
+UI-008,Lead Form,Consent checkbox required before submission,User cannot submit without consent,,
+UI-009,Mobile,Widget works on mobile width 375px,No overflow or clipped text,,
+UI-010,Accessibility,Keyboard can focus launcher/input/send button,Basic keyboard navigation works,,
+UI-011,Error Handling,Backend offline shows helpful message,No blank screen or crash,,
+UI-012,Branding,Colors feel consistent with MathPath,UI feels child/parent friendly,,

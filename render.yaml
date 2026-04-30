@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: mathpath-ai-chatbot-backend
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: TOP_K
+        value: 5
+      - key: MIN_RETRIEVAL_SCORE
+        value: 0.08
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ADMIN_API_KEY
+        sync: false
+      - key: LEAD_WEBHOOK_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

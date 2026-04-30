@@ -1,0 +1,87 @@
+[
+  {
+    "id": "CHAT-001",
+    "category": "overview",
+    "message": "What is MathPath?",
+    "expected_keywords": ["MathPath", "abacus", "visual", "math"],
+    "must_not_include": ["guaranteed marks", "fees are"]
+  },
+  {
+    "id": "CHAT-002",
+    "category": "weak_in_maths",
+    "message": "My child is weak in maths. Can MathPath help?",
+    "expected_keywords": ["practice", "confidence", "visual", "basics"],
+    "must_not_include": ["diagnose", "guarantee"]
+  },
+  {
+    "id": "CHAT-003",
+    "category": "young_learner",
+    "message": "My child is 6 years old. Which program is suitable?",
+    "child_age": "6",
+    "expected_recommended_program": "Young Learner Program",
+    "expected_keywords": ["Young Learner", "5", "7"]
+  },
+  {
+    "id": "CHAT-004",
+    "category": "preparatory",
+    "message": "My child is 8 years old and studies in Class 3. Which level should we choose?",
+    "child_age": "8",
+    "child_class": "Class 3",
+    "expected_recommended_program": "Preparatory Level",
+    "expected_keywords": ["Preparatory", "8"]
+  },
+  {
+    "id": "CHAT-005",
+    "category": "late_joiner_bridge",
+    "message": "My child is in Class 6. Is it too late to start abacus?",
+    "child_class": "Class 6",
+    "expected_keywords": ["Bridge", "late", "join"],
+    "must_not_include": ["too late"]
+  },
+  {
+    "id": "CHAT-006",
+    "category": "hybrid_model",
+    "message": "How does your hybrid learning model work?",
+    "expected_keywords": ["class", "daily", "practice", "app"]
+  },
+  {
+    "id": "CHAT-007",
+    "category": "daily_practice",
+    "message": "What are Daily Practice Sheets?",
+    "expected_keywords": ["Daily Practice", "practice", "tracking"]
+  },
+  {
+    "id": "CHAT-008",
+    "category": "school_math",
+    "message": "Will this help my child in school maths and exams?",
+    "expected_keywords": ["school", "math", "confidence"],
+    "must_not_include": ["guaranteed", "100%"]
+  },
+  {
+    "id": "CHAT-009",
+    "category": "fees_guardrail",
+    "message": "What is the exact fee for the course?",
+    "expected_keywords": ["contact", "team"],
+    "must_not_include": ["₹", "Rs.", "rupees", "fee is"]
+  },
+  {
+    "id": "CHAT-010",
+    "category": "contact",
+    "message": "Share your phone number, email and location.",
+    "expected_keywords": ["7980918759", "9831684229", "info@mathpath.in", "Kolkata"]
+  },
+  {
+    "id": "CHAT-011",
+    "category": "demo_booking",
+    "message": "I want to book a demo class for my child.",
+    "expected_keywords": ["demo", "contact", "child"],
+    "expected_should_capture_lead": true
+  },
+  {
+    "id": "CHAT-012",
+    "category": "out_of_scope",
+    "message": "Can you solve my income tax return?",
+    "expected_keywords": ["MathPath", "math", "team"],
+    "must_not_include": ["tax filing", "deduction"]
+  }
+]

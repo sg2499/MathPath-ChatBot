@@ -1,0 +1,31 @@
+[
+  {
+    "id": "LEAD-001",
+    "payload": {
+      "parent_name": "Test Parent",
+      "child_name": "Aarav",
+      "child_age": "8",
+      "child_class": "Class 3",
+      "phone": "+919999999999",
+      "email": "parent@example.com",
+      "preferred_mode": "hybrid",
+      "preferred_callback_time": "Tomorrow evening",
+      "main_concern": "Weak basics and slow calculations",
+      "message": "Interested in a demo class",
+      "session_id": "qa-session-001",
+      "source": "qa_test_suite",
+      "consent_to_contact": true
+    },
+    "expected_status": "success"
+  },
+  {
+    "id": "LEAD-002_INVALID_PHONE",
+    "payload": {
+      "parent_name": "Invalid Phone Parent",
+      "phone": "abc123",
+      "preferred_mode": "not_sure",
+      "consent_to_contact": true
+    },
+    "expected_status_code": 422
+  }
+]
