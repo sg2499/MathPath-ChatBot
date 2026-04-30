@@ -12,10 +12,11 @@ export default function App() {
     <main className="mathpath-demo-page">
       <section className="mathpath-demo-hero">
         <img src="/MathPath-Logo.png" alt="MathPath Ace with Abacus" className="mathpath-demo-logo" />
-        <h1>MathPath AI Chatbot Preview</h1>
+        <h1>MathPath ChatBot</h1>
         <p>
-          This page previews the production-ready floating chatbot widget before it is integrated into the MathPath website.
-          The bot connects to the deployed FastAPI backend and answers parent enquiries using the MathPath knowledge base.
+          MathPath helps children build strong maths fundamentals through abacus, visualisation, and
+          school-syllabus-aligned learning. Our programs are designed to improve speed, accuracy,
+          focus, and confidence in mathematics for different age groups.
         </p>
       </section>
       <ChatWidget />
