@@ -17,8 +17,88 @@ function createSessionId() {
 const welcomeMessage = {
   role: "assistant",
   content:
-    "Hi! I’m MathPath AI. I can help you choose the right MathPath Abacus program, explain our hybrid learning model, Bridge Course, daily practice system, and help you book a free demo. What would you like to know?"
+    "Hi! I’m MathPath AI. I can help you choose the right MathPath Abacus program, explain our hybrid learning model, Bridge Course, daily practice system, and answer parent queries about MathPath. What would you like to know?"
 };
+
+function normalizeText(text = "") {
+  return String(text).toLowerCase().trim();
+}
+
+function isClearLeadRequest(text = "") {
+  const value = normalizeText(text);
+
+  const strongLeadPhrases = [
+    "i want to book",
+    "book a demo",
+    "book demo",
+    "schedule a demo",
+    "schedule demo",
+    "call me",
+    "please call",
+    "callback",
+    "arrange a call",
+    "i want admission",
+    "i want to join",
+    "i want to enroll",
+    "i want to enrol",
+    "enroll my child",
+    "enrol my child",
+    "contact me",
+    "submit my details"
+  ];
+
+  return strongLeadPhrases.some((phrase) => value.includes(phrase));
+}
+
+function isInformationOnlyDemoQuestion(text = "") {
+  const value = normalizeText(text);
+  return (
+    value.includes("how can i book") ||
+    value.includes("how do i book") ||
+    value.includes("how to book") ||
+    value.includes("what is the demo") ||
+    value.includes("demo class?") ||
+    value.includes("free demo?")
+  );
+}
+
+function isConversationEnding(text = "") {
+  const value = normalizeText(text);
+
+  const endingPhrases = [
+    "thanks",
+    "thank you",
+    "that is all",
+    "that's all",
+    "no more questions",
+    "nothing else",
+    "i am done",
+    "i'm done",
+    "done for now",
+    "okay thanks",
+    "ok thanks",
+    "got it thanks",
+    "this helps"
+  ];
+
+  return endingPhrases.some((phrase) => value.includes(phrase));
+}
+
+function ConversationCTA({ onBookDemo, onContinue }) {
+  return (
+    <div className="mp-conversation-cta" role="region" aria-label="Continue or book demo">
+      <p>Would you like to ask another question or book a free MathPath demo?</p>
+      <div className="mp-conversation-cta-actions">
+        <button type="button" className="secondary" onClick={onContinue}>
+          Ask another question
+        </button>
+        <button type="button" onClick={onBookDemo}>
+          Book free demo
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ChatWidget() {
   const params = new URLSearchParams(window.location.search);
@@ -28,19 +108,15 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState([welcomeMessage]);
   const [isLoading, setIsLoading] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [showConversationCTA, setShowConversationCTA] = useState(false);
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
 
   const sessionId = useMemo(() => createSessionId(), []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, showLeadForm]);
-
-  function shouldShowLeadButton(text) {
-    const triggerWords = ["demo", "admission", "join", "enroll", "enrol", "fee", "fees", "callback", "contact", "book", "trial"];
-    return triggerWords.some((word) => String(text || "").toLowerCase().includes(word));
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, showLeadForm, showConversationCTA]);
 
   async function handleSend(customText) {
     const text = (customText || input).trim();
@@ -48,6 +124,11 @@ export default function ChatWidget() {
 
     setInput("");
     setError("");
+    setShowConversationCTA(false);
+
+    const shouldOpenLeadFormAfterAnswer = isClearLeadRequest(text) && !isInformationOnlyDemoQuestion(text);
+    const shouldShowCTAAfterAnswer = isConversationEnding(text);
+
     setMessages((current) => [...current, { role: "user", content: text }]);
     setIsLoading(true);
 
@@ -85,8 +166,10 @@ export default function ChatWidget() {
         window.localStorage.setItem("mathpath_chat_session_id", data.session_id);
       }
 
-      if (shouldShowLeadButton(text) || shouldShowLeadButton(answer) || data.should_capture_lead) {
+      if (shouldOpenLeadFormAfterAnswer) {
         setShowLeadForm(true);
+      } else if (shouldShowCTAAfterAnswer) {
+        setShowConversationCTA(true);
       }
     } catch (_err) {
       try {
@@ -102,8 +185,11 @@ export default function ChatWidget() {
         if (data.session_id) {
           window.localStorage.setItem("mathpath_chat_session_id", data.session_id);
         }
-        if (shouldShowLeadButton(text) || shouldShowLeadButton(answer) || data.should_capture_lead) {
+
+        if (shouldOpenLeadFormAfterAnswer) {
           setShowLeadForm(true);
+        } else if (shouldShowCTAAfterAnswer) {
+          setShowConversationCTA(true);
         }
       } catch (_fallbackErr) {
         setError("I’m having trouble connecting to the MathPath AI server. Please make sure the backend is running.");
@@ -132,6 +218,14 @@ export default function ChatWidget() {
     }
   }
 
+  function resetChat() {
+    setMessages([welcomeMessage]);
+    setShowLeadForm(false);
+    setShowConversationCTA(false);
+    setError("");
+    setInput("");
+  }
+
   return (
     <div className="mp-chatbot-root">
       {!isOpen && (
@@ -153,21 +247,13 @@ export default function ChatWidget() {
               </div>
             </div>
             <div className="mp-chat-actions">
-              <button type="button" aria-label="Show lead form" onClick={() => setShowLeadForm((value) => !value)}>
+              <button type="button" aria-label="Book a free demo" title="Book a free demo" onClick={() => setShowLeadForm((value) => !value)}>
                 <UserRoundPlus size={18} />
               </button>
               <button type="button" aria-label="Minimize chatbot" onClick={() => setIsOpen(false)}>
                 <Minimize2 size={18} />
               </button>
-              <button
-                type="button"
-                aria-label="Reset chat"
-                onClick={() => {
-                  setMessages([welcomeMessage]);
-                  setShowLeadForm(false);
-                  setError("");
-                }}
-              >
+              <button type="button" aria-label="Reset chat" onClick={resetChat}>
                 <X size={18} />
               </button>
             </div>
@@ -179,19 +265,32 @@ export default function ChatWidget() {
               {messages.map((message, index) => (
                 <ChatMessage key={message.id || `${message.role}-${index}`} message={message} />
               ))}
+
+              {showConversationCTA && !showLeadForm && (
+                <ConversationCTA
+                  onContinue={() => setShowConversationCTA(false)}
+                  onBookDemo={() => {
+                    setShowConversationCTA(false);
+                    setShowLeadForm(true);
+                  }}
+                />
+              )}
+
               {showLeadForm && (
                 <LeadForm
                   sessionId={sessionId}
-                  onSubmitted={() =>
+                  onSubmitted={() => {
+                    setShowLeadForm(false);
+                    setShowConversationCTA(false);
                     setMessages((current) => [
                       ...current,
                       {
                         role: "assistant",
                         content:
-                          "Thank you for sharing the details. The MathPath team will contact you shortly for demo class and level guidance."
+                          "Thank you for sharing the details. The MathPath team will contact you shortly for demo class and level guidance. You can continue asking me anything about MathPath."
                       }
-                    ])
-                  }
+                    ]);
+                  }}
                 />
               )}
               <div ref={messagesEndRef} />
