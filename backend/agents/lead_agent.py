@@ -7,9 +7,28 @@ from agents.lead_qualification_agent import qualify_lead
 
 
 def should_capture_lead(intent: str, message: str) -> bool:
+    """Return True only for explicit demo/callback intent.
+
+    This intentionally avoids triggering the form for normal questions about
+    fees, centres, programs, weakness in maths, or contact details. The user
+    must clearly ask for a demo, trial, callback, or call request.
+    """
     text = message.lower()
-    triggers = ["demo", "trial", "admission", "enroll", "enrol", "join", "callback", "call me", "fees", "contact"]
-    return intent in {"demo_booking", "fees"} or any(trigger in text for trigger in triggers)
+    explicit_triggers = [
+        "book demo",
+        "free demo",
+        "schedule demo",
+        "demo class",
+        "trial class",
+        "book a trial",
+        "arrange demo",
+        "want a demo",
+        "need a demo",
+        "callback",
+        "call me",
+        "contact me for demo",
+    ]
+    return intent == "demo_booking" and any(trigger in text for trigger in explicit_triggers)
 
 
 def build_lead_record(lead: LeadRequest) -> dict:
@@ -54,7 +73,6 @@ def save_lead(lead: LeadRequest) -> dict:
             )
             supabase_store.save(record)
         except Exception:
-            # Local CSV remains the source of truth if Supabase is unavailable.
             pass
 
     forward_to_webhook(settings.lead_webhook_url, record)

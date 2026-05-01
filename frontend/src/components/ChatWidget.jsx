@@ -49,22 +49,24 @@ function formatMessage(text) {
 
 function shouldOpenLeadFormFromUser(text) {
   const value = text.toLowerCase();
+
+  // Open the lead form only when the user clearly asks for a demo, trial,
+  // callback, or direct call request. Normal questions about programs, fees,
+  // centres, class duration, or weak maths must not trigger the form.
   const directLeadPhrases = [
     "book demo",
+    "book a demo",
     "free demo",
     "schedule demo",
+    "demo class",
+    "arrange demo",
+    "want a demo",
+    "need a demo",
     "trial class",
-    "book a class",
-    "call me",
+    "book a trial",
     "callback",
-    "contact me",
-    "i want admission",
-    "admission",
-    "enroll",
-    "enrol",
-    "register",
-    "how to join",
-    "want to join",
+    "call me",
+    "please call",
   ];
 
   return directLeadPhrases.some((phrase) => value.includes(phrase));
@@ -242,6 +244,17 @@ export default function ChatWidget() {
 
   const hasConversation = messages.length > 1;
 
+  const resetChat = () => {
+    setMessages(INITIAL_MESSAGES);
+    setInput("");
+    setError("");
+    setShowLeadForm(false);
+    setLeadSuccessId("");
+    setShowClosingCta(false);
+    setIsStreaming(false);
+    setTimeout(() => inputRef.current?.focus(), 100);
+  };
+
   const statusLabel = useMemo(() => {
     if (isStreaming) return "Answering live";
     return "Online now";
@@ -256,17 +269,6 @@ export default function ChatWidget() {
       setTimeout(() => inputRef.current?.focus(), 150);
     }
   }, [isOpen]);
-
-  const refreshChat = () => {
-    setMessages(INITIAL_MESSAGES);
-    setInput("");
-    setIsStreaming(false);
-    setShowLeadForm(false);
-    setLeadSuccessId("");
-    setShowClosingCta(false);
-    setError("");
-    setTimeout(() => inputRef.current?.focus(), 120);
-  };
 
   const sendMessage = async (messageText = input) => {
     const trimmed = messageText.trim();
@@ -368,16 +370,16 @@ export default function ChatWidget() {
           </div>
 
           <div className="mp-chat-actions premium">
-            <button className="mp-icon-button" onClick={refreshChat} aria-label="Start a new chat" title="Start a new chat">
+            <button className="mp-icon-button" onClick={resetChat} aria-label="Start a new chat" title="Start a new chat">
               ↻
             </button>
-            <button className="mp-icon-button" onClick={() => setShowLeadForm((prev) => !prev)} aria-label="Book demo" title="Book demo">
+            <button className="mp-icon-button" onClick={() => setShowLeadForm((prev) => !prev)} aria-label="Book demo" title="Book a demo">
               ♡
             </button>
-            <button className="mp-icon-button" onClick={() => setIsExpanded((prev) => !prev)} aria-label="Expand chat">
+            <button className="mp-icon-button" onClick={() => setIsExpanded((prev) => !prev)} aria-label="Expand chat" title="Expand chat">
               {isExpanded ? "↙" : "↗"}
             </button>
-            <button className="mp-icon-button" onClick={() => setIsOpen(false)} aria-label="Close chat">
+            <button className="mp-icon-button" onClick={() => setIsOpen(false)} aria-label="Close chat" title="Close chat">
               ×
             </button>
           </div>
