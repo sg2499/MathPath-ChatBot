@@ -26,7 +26,7 @@ SYSTEM_PROMPT = f"""You are MathPath AI, the official website assistant for Math
 
 Your role:
 - Help parents and website visitors understand MathPath.
-- Explain MathPath programs, age-wise levels, abacus learning, visualisation, Bridge Course, daily practice, benefits, and contact details.
+- Explain MathPath programs, age-wise levels, abacus learning, visualisation, Bridge Course, daily practice, benefits, class process, assessment, certification, competitions, and contact details.
 - Guide interested parents professionally toward a demo class or callback only when appropriate.
 
 Official MathPath contact details:
@@ -34,16 +34,24 @@ Phone: {OFFICIAL_PHONE}
 Email: {OFFICIAL_EMAIL}
 Location: {OFFICIAL_LOCATION}
 
-Strict rules:
+Core professional style:
+1. Be crisp, clear, and professional.
+2. Default response length must be 2 to 5 short sentences.
+3. Use bullet points only when the user asks a multi-part question or asks for comparison.
+4. Answer the exact question first. Add only one useful next step when needed.
+5. Do not bore users with long explanations unless they ask for details.
+6. Do not repeatedly push demo booking.
+7. Suggest demo/callback only when the user asks about admission, joining, program selection, child suitability, callback, enrolment, or trial class.
+
+Strict accuracy rules:
 1. Answer only using the provided MathPath context and safe organisational information.
-2. Never invent fees, batch timings, discounts, guarantees, admission deadlines, teacher names, ownership details, management names, registration details, franchise details, or internal business details.
+2. Never invent fees, exact batch availability, discounts, guarantees, admission deadlines, teacher names, ownership details, management names, registration details, franchise details, or internal business details.
 3. Never use placeholders such as [insert contact details here], [phone number], [email], [address], [owner name], or any unfinished placeholder text.
-4. If ownership, management, fees, exact timings, offers, or internal business details are not available in the knowledge base, clearly say that the information is not publicly listed in your current knowledge base and share the official MathPath contact details.
-5. Do not over-push demo booking. Suggest a demo only when the user is asking about admission, program selection, child suitability, callback, enrolment, or interest in joining.
-6. For factual contact/location questions, give the exact official contact details.
-7. Do not make medical, psychological, diagnostic, or guaranteed academic-result claims.
-8. Keep answers warm, concise, professional, and parent-friendly.
-9. If the user asks about owners or ownership, do not guess. Say that ownership details are not publicly listed in your current knowledge base and share the official contact details.
+4. If ownership, management, fees, exact timings, offers, or internal business details are not available in the knowledge base, clearly say so and share the official MathPath contact details.
+5. For factual contact/location questions, give the exact official contact details.
+6. Do not make medical, psychological, diagnostic, or guaranteed academic-result claims.
+7. If asked about fees, say that the latest fee structure should be confirmed with MathPath and share the phone numbers.
+8. If asked about batch timings, mention available broad options only: weekdays from 5 PM and weekend morning/afternoon/evening batches. Ask them to confirm exact availability with MathPath.
 """
 
 
@@ -56,70 +64,89 @@ def _format_context(results: list[RetrievalResult]) -> str:
     )
 
 
-def _contains_owner_question(message: str) -> bool:
+def _contains_any(message: str, terms: list[str]) -> bool:
     text = message.lower()
-    owner_terms = [
-        "owner",
-        "owners",
-        "ownership",
-        "founder",
-        "founders",
-        "director",
-        "directors",
-        "management",
-        "who runs",
-        "who owns",
-        "proprietor",
-        "partner",
-        "partners",
-    ]
-    return any(term in text for term in owner_terms)
+    return any(term in text for term in terms)
+
+
+def _contains_owner_question(message: str) -> bool:
+    return _contains_any(
+        message,
+        [
+            "owner",
+            "owners",
+            "ownership",
+            "founder",
+            "founders",
+            "director",
+            "directors",
+            "management",
+            "who runs",
+            "who owns",
+            "proprietor",
+            "partner",
+            "partners",
+        ],
+    )
 
 
 def _contains_contact_question(message: str) -> bool:
-    text = message.lower()
-    contact_terms = [
-        "location",
-        "located",
-        "address",
-        "centre",
-        "center",
-        "centres",
-        "centers",
-        "phone",
-        "number",
-        "contact",
-        "email",
-        "where are you",
-        "where is",
-    ]
-    return any(term in text for term in contact_terms)
+    return _contains_any(
+        message,
+        [
+            "location",
+            "located",
+            "address",
+            "centre",
+            "center",
+            "centres",
+            "centers",
+            "phone",
+            "number",
+            "contact",
+            "email",
+            "where are you",
+            "where is",
+        ],
+    )
 
 
 def _contains_demo_intent(message: str) -> bool:
-    text = message.lower()
-    demo_terms = [
-        "book demo",
-        "free demo",
-        "schedule demo",
-        "trial class",
-        "callback",
-        "call me",
-        "admission",
-        "enroll",
-        "enrol",
-        "join",
-        "register",
-        "start class",
-    ]
-    return any(term in text for term in demo_terms)
+    return _contains_any(
+        message,
+        [
+            "book demo",
+            "free demo",
+            "schedule demo",
+            "trial class",
+            "callback",
+            "call me",
+            "admission",
+            "enroll",
+            "enrol",
+            "join",
+            "register",
+            "start class",
+        ],
+    )
+
+
+def _contains_fee_question(message: str) -> bool:
+    return _contains_any(
+        message,
+        ["fee", "fees", "price", "pricing", "cost", "charges", "payment"],
+    )
+
+
+def _contains_timing_question(message: str) -> bool:
+    return _contains_any(
+        message,
+        ["timing", "timings", "class time", "batch", "batches", "schedule", "days"],
+    )
 
 
 def _sanitize_answer(answer: str) -> str:
-    """
-    Removes common AI placeholder patterns and replaces them with MathPath's
-    official contact details so the bot never shows unfinished placeholder text.
-    """
+    """Remove AI placeholder text and keep answer compact."""
     if not answer:
         return ""
 
@@ -146,7 +173,6 @@ def _sanitize_answer(answer: str) -> str:
             had_placeholder = True
             cleaned = re.sub(pattern, "", cleaned, flags=re.IGNORECASE)
 
-    # Remove awkward empty sentences caused by placeholder removal.
     cleaned = re.sub(r"\s+([,.!?])", r"\1", cleaned)
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
@@ -172,7 +198,6 @@ def _fallback_answer(
                 f"Phone: {OFFICIAL_PHONE}\n"
                 f"Email: {OFFICIAL_EMAIL}"
             )
-
         return (
             "Ownership or internal administrative details are not publicly listed in my current MathPath knowledge base. "
             "For official ownership, management, or administrative information, please contact the MathPath team directly.\n\n"
@@ -180,43 +205,41 @@ def _fallback_answer(
             f"Email: {OFFICIAL_EMAIL}"
         )
 
-    if intent == "fees":
+    if intent == "fees" or _contains_fee_question(message):
         return (
-            "For fees, offers, batch timings, and admission-related charges, the MathPath team should confirm the latest details directly."
-            + CONTACT_BLOCK
+            "For the latest MathPath fee structure, please contact the helpline directly. "
+            f"Phone: {OFFICIAL_PHONE}."
+        )
+
+    if _contains_timing_question(message):
+        return (
+            "MathPath offers weekday evening classes from 5 PM onward and weekend batches on Saturday and Sunday "
+            "in morning, afternoon, and evening slots. Exact availability should be confirmed with the MathPath team. "
+            f"Phone: {OFFICIAL_PHONE}."
         )
 
     if intent == "contact_location" or _contains_contact_question(message):
         return (
-            f"You can contact MathPath at {OFFICIAL_PHONE} or email {OFFICIAL_EMAIL}.\n\n"
-            f"The centre is located at {OFFICIAL_LOCATION}."
+            f"MathPath is located at {OFFICIAL_LOCATION}.\n\n"
+            f"Phone: {OFFICIAL_PHONE}\n"
+            f"Email: {OFFICIAL_EMAIL}"
         )
 
     if not results:
         return (
-            "I do not have enough verified MathPath information to answer that accurately."
-            + CONTACT_BLOCK
+            "I do not have enough verified MathPath information to answer that accurately. "
+            f"Please contact MathPath at {OFFICIAL_PHONE} or {OFFICIAL_EMAIL}."
         )
 
     context = results[0].text.strip().replace("#", "").strip()
+    if len(context) > 700:
+        context = context[:700].rsplit(".", 1)[0] + "."
 
-    intro = "Here is what MathPath offers based on your question:"
+    intro = "Here is the relevant MathPath information:"
     if recommended_program:
-        intro = (
-            f"Based on the details shared, the likely fit is **{recommended_program}**. "
-            f"{recommendation_note(recommended_program)}"
-        )
+        intro = f"The likely fit is **{recommended_program}**. {recommendation_note(recommended_program)}"
 
-    if len(context) > 1100:
-        context = context[:1100].rsplit(".", 1)[0] + "."
-
-    add_contact = intent in {
-        "demo_booking",
-        "program_recommendation",
-        "parent_concern",
-        "bridge_course",
-    } or _contains_demo_intent(message)
-
+    add_contact = intent in {"demo_booking", "program_recommendation"} or _contains_demo_intent(message)
     return f"{intro}\n\n{context}{CONTACT_BLOCK if add_contact else ''}"
 
 
@@ -247,12 +270,17 @@ Email: {OFFICIAL_EMAIL}
 Location: {OFFICIAL_LOCATION}
 
 Response instructions:
-- Write a helpful answer for a parent or website visitor.
-- Use the recommended program only if relevant.
+- Write a crisp, professional answer for a parent or website visitor.
+- Default to 2 to 5 short sentences.
+- Do not write a long answer unless the user specifically asks for details.
+- Answer the exact question first.
+- Use bullets only when they make the answer easier to scan.
 - Never use placeholders.
 - Never write "[insert contact details here]" or similar placeholder text.
 - If the user asks about owners, ownership, directors, management, or internal administrative details, say that this information is not publicly listed in your current MathPath knowledge base and share the official phone/email.
 - If the user asks for centre/location/contact details, provide the exact official MathPath contact details.
+- If the user asks about fees, do not mention any fee amount. Ask them to contact the helpline.
+- If the user asks about timings, mention broad options only: weekdays from 5 PM and weekend morning/afternoon/evening batches.
 - Do not invent fees, timings, names, ownership details, guarantees, or offers.
 - Do not push demo booking unless the user shows admission/joining/demo/callback intent.
 """
@@ -291,7 +319,7 @@ def generate_answer(
                     ),
                 },
             ],
-            temperature=0.2,
+            temperature=0.15,
         )
 
         answer = (response.choices[0].message.content or "").strip()
@@ -340,7 +368,7 @@ def generate_answer_stream(
                     ),
                 },
             ],
-            temperature=0.2,
+            temperature=0.15,
             stream=True,
         )
 
@@ -349,7 +377,6 @@ def generate_answer_stream(
                 continue
 
             delta = event.choices[0].delta.content if event.choices[0].delta else None
-
             if delta:
                 yield delta
 
