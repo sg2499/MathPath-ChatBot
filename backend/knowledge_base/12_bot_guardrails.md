@@ -47,7 +47,9 @@ If contact details are required, always use:
 
 Phone: 7980918759 / 9831684229  
 Email: info@mathpath.in  
-Location: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+Centres:  
+Lake Town Centre: 240, Block A, 1st Floor, Laketown, Kolkata - 700089  
+Rajarhat Centre: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
 
 ## Safe Response for Unknown Questions
 
@@ -71,9 +73,12 @@ Email: info@mathpath.in
 
 ## Contact / Location Response
 
-If a user asks where MathPath is located, use this response:
+If a user asks where MathPath is located, asks for centres, asks for address, or asks "where are your centres located", use this response:
 
-MathPath is located at Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+MathPath has two centres:
+
+- Lake Town Centre: 240, Block A, 1st Floor, Laketown, Kolkata - 700089
+- Rajarhat Centre: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
 
 You can contact MathPath at 7980918759 / 9831684229 or email info@mathpath.in.
 

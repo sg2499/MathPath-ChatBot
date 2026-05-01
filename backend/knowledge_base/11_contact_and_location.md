@@ -21,38 +21,26 @@ info@mathpath.in
 - 7980918759
 - 9831684229
 
-## Centre Location
+## Centres
 
-MathPath is located at:
+MathPath has two centres:
+
+### Lake Town Centre
+
+240, Block A, 1st Floor, Laketown, Kolkata - 700089
+
+### Rajarhat Centre
 
 Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
 
-## Class Timing Information
-
-MathPath classes are mainly after-school activities.
-
-Available options include:
-
-- Weekday evening classes from 5 PM onward
-- Saturday batches
-- Sunday batches
-- Morning, afternoon, and evening options on weekends
-
-Exact batch availability should be confirmed with the MathPath team.
-
-## Fee Information
-
-The chatbot should not share or invent fee amounts.
-
-For the latest fee structure, parents should contact:
-
-Phone: 7980918759 / 9831684229
-
 ## Suggested Bot Contact Answer
 
-You can contact MathPath at 7980918759 / 9831684229 or email info@mathpath.in.
+MathPath has two centres:
 
-The centre is located at Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+- Lake Town Centre: 240, Block A, 1st Floor, Laketown, Kolkata - 700089
+- Rajarhat Centre: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+
+You can contact MathPath at 7980918759 / 9831684229 or email info@mathpath.in.
 
 ## Ownership, Management, and Administrative Details
 
@@ -104,4 +92,6 @@ If contact details are needed, always use the official MathPath details:
 
 Phone: 7980918759 / 9831684229  
 Email: info@mathpath.in  
-Location: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+Centres:  
+Lake Town Centre: 240, Block A, 1st Floor, Laketown, Kolkata - 700089  
+Rajarhat Centre: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.

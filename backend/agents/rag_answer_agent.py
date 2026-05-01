@@ -10,16 +10,21 @@ from rag.vector_store import RetrievalResult
 
 OFFICIAL_PHONE = "7980918759 / 9831684229"
 OFFICIAL_EMAIL = "info@mathpath.in"
-OFFICIAL_LOCATION = (
+LAKE_TOWN_CENTRE = "240, Block A, 1st Floor, Laketown, Kolkata - 700089"
+RAJARHAT_CENTRE = (
     "Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, "
     "next to Urban Greens, above Vrindavan Sweets, Kolkata 700136"
+)
+OFFICIAL_LOCATION = (
+    f"Lake Town Centre: {LAKE_TOWN_CENTRE}\n"
+    f"Rajarhat Centre: {RAJARHAT_CENTRE}"
 )
 
 CONTACT_BLOCK = (
     f"\n\nFor accurate details, please contact the MathPath team directly.\n\n"
     f"Phone: {OFFICIAL_PHONE}\n"
     f"Email: {OFFICIAL_EMAIL}\n"
-    f"Location: {OFFICIAL_LOCATION}"
+    f"Centres:\n{OFFICIAL_LOCATION}"
 )
 
 PROGRAM_ENTRY_ANSWER = """In MathPath, children are enrolled into one of three entry programs based on their class group:
@@ -39,7 +44,8 @@ Your role:
 Official MathPath contact details:
 Phone: {OFFICIAL_PHONE}
 Email: {OFFICIAL_EMAIL}
-Location: {OFFICIAL_LOCATION}
+Centres:
+{OFFICIAL_LOCATION}
 
 Core professional style:
 1. Be crisp, clear, and professional.
@@ -56,7 +62,7 @@ Strict accuracy rules:
 2. Never invent fees, exact batch availability, discounts, guarantees, admission deadlines, teacher names, ownership details, management names, registration details, franchise details, or internal business details.
 3. Never use placeholders such as [insert contact details here], [phone number], [email], [address], [owner name], or any unfinished placeholder text.
 4. If ownership, management, fees, exact timings, offers, or internal business details are not available in the knowledge base, clearly say so and share the official MathPath contact details.
-5. For factual contact/location questions, give the exact official contact details.
+5. For factual contact/location questions, always show both MathPath centres: Lake Town Centre and Rajarhat Centre, along with phone and email.
 6. Do not make medical, psychological, diagnostic, or guaranteed academic-result claims.
 7. If asked about fees, say that the latest fee structure should be confirmed with MathPath and share the phone numbers.
 8. If asked about batch timings, mention available broad options only: weekdays from 5 PM and weekend morning/afternoon/evening batches. Ask them to confirm exact availability with MathPath.
@@ -244,7 +250,7 @@ def _fallback_answer(
     if _contains_owner_question(message):
         if _contains_contact_question(message):
             return (
-                f"MathPath is located at {OFFICIAL_LOCATION}.\n\n"
+                f"MathPath has two centres:\n{OFFICIAL_LOCATION}\n\n"
                 "Ownership or internal administrative details are not publicly listed in my current MathPath knowledge base. "
                 "For official ownership, management, or administrative information, please contact the MathPath team directly.\n\n"
                 f"Phone: {OFFICIAL_PHONE}\n"
@@ -272,7 +278,7 @@ def _fallback_answer(
 
     if intent == "contact_location" or _contains_contact_question(message):
         return (
-            f"MathPath is located at {OFFICIAL_LOCATION}.\n\n"
+            f"MathPath has two centres:\n{OFFICIAL_LOCATION}\n\n"
             f"Phone: {OFFICIAL_PHONE}\n"
             f"Email: {OFFICIAL_EMAIL}"
         )
@@ -319,7 +325,8 @@ MathPath context:
 Official MathPath contact details:
 Phone: {OFFICIAL_PHONE}
 Email: {OFFICIAL_EMAIL}
-Location: {OFFICIAL_LOCATION}
+Centres:
+{OFFICIAL_LOCATION}
 
 Response instructions:
 - Write a crisp, professional answer for a parent or website visitor.
@@ -330,7 +337,7 @@ Response instructions:
 - Never use placeholders.
 - Never write "[insert contact details here]" or similar placeholder text.
 - If the user asks about owners, ownership, directors, management, or internal administrative details, say that this information is not publicly listed in your current MathPath knowledge base and share the official phone/email.
-- If the user asks for centre/location/contact details, provide the exact official MathPath contact details.
+- If the user asks for centre/location/contact details, show both centres exactly: Lake Town Centre and Rajarhat Centre, plus phone and email.
 - If the user asks about fees, do not mention any fee amount. Ask them to contact the helpline.
 - If the user asks about timings, mention broad options only: weekdays from 5 PM and weekend morning/afternoon/evening batches.
 - For program overview / age-wise program / programs offered questions, answer only with the three entry programs: Young Learner, Preparatory Level 1, and Bridge Course. Do not include Intermediate Level or Master Module unless the user specifically asks about advanced/full progression levels.

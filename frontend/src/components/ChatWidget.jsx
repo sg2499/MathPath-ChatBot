@@ -257,6 +257,17 @@ export default function ChatWidget() {
     }
   }, [isOpen]);
 
+  const refreshChat = () => {
+    setMessages(INITIAL_MESSAGES);
+    setInput("");
+    setIsStreaming(false);
+    setShowLeadForm(false);
+    setLeadSuccessId("");
+    setShowClosingCta(false);
+    setError("");
+    setTimeout(() => inputRef.current?.focus(), 120);
+  };
+
   const sendMessage = async (messageText = input) => {
     const trimmed = messageText.trim();
     if (!trimmed || isStreaming) return;
@@ -357,7 +368,10 @@ export default function ChatWidget() {
           </div>
 
           <div className="mp-chat-actions premium">
-            <button className="mp-icon-button" onClick={() => setShowLeadForm((prev) => !prev)} aria-label="Book demo">
+            <button className="mp-icon-button" onClick={refreshChat} aria-label="Start a new chat" title="Start a new chat">
+              ↻
+            </button>
+            <button className="mp-icon-button" onClick={() => setShowLeadForm((prev) => !prev)} aria-label="Book demo" title="Book demo">
               ♡
             </button>
             <button className="mp-icon-button" onClick={() => setIsExpanded((prev) => !prev)} aria-label="Expand chat">
