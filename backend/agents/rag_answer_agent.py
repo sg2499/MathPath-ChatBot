@@ -22,6 +22,13 @@ CONTACT_BLOCK = (
     f"Location: {OFFICIAL_LOCATION}"
 )
 
+PROGRAM_ENTRY_ANSWER = """In MathPath, children are enrolled into one of three entry programs based on their class group:
+
+- **Young Learner** – For UKG, Class 1, and Class 2. Duration: 10 months. Focus: foundational operations in abacus. After completion, the child is promoted to Preparatory Level 2.
+- **Preparatory Level 1** – For Class 3 and Class 4. Duration: 4 months. Focus: visual and operational fluency. After completion, the child is promoted to Preparatory Level 2.
+- **Bridge Course** – For Class 5 to Class 8 late joiners. Duration: 10–12 months. Four levels are clubbed into one compact level. After completion, the child is promoted to Intermediate Level 1.
+""".strip()
+
 SYSTEM_PROMPT = f"""You are MathPath AI, the official website assistant for MathPath - Ace with Abacus.
 
 Your role:
@@ -42,6 +49,7 @@ Core professional style:
 5. Do not bore users with long explanations unless they ask for details.
 6. Do not repeatedly push demo booking.
 7. Suggest demo/callback only when the user asks about admission, joining, program selection, child suitability, callback, enrolment, or trial class.
+8. For questions like "what programs do you offer", "different programs", "age-wise programs", "how do you cater to age groups", or "which program for which class", mention only the three entry programs: Young Learner, Preparatory Level 1, and Bridge Course. Do not mention Intermediate Level or Master Module unless the user specifically asks about full progression, intermediate level, master module, advanced levels, or complete curriculum.
 
 Strict accuracy rules:
 1. Answer only using the provided MathPath context and safe organisational information.
@@ -145,6 +153,47 @@ def _contains_timing_question(message: str) -> bool:
     )
 
 
+def _contains_program_entry_question(message: str) -> bool:
+    """Detect questions asking for MathPath's entry/enrolment programs."""
+    text = message.lower()
+
+    asks_about_programs = any(
+        term in text
+        for term in [
+            "program", "programs", "programme", "programmes", "course", "courses",
+            "level", "levels", "age group", "age groups", "class group", "class wise",
+            "class-wise", "different age", "cater", "offer", "offered", "enroll",
+            "enrol", "admission", "suitable", "which class", "what class", "entry"
+        ]
+    )
+
+    asks_for_overview = any(
+        phrase in text
+        for phrase in [
+            "different programs", "different programmes", "programs you offer",
+            "programmes you offer", "what programs", "what programmes",
+            "which programs", "which programmes", "program details", "program structure",
+            "different courses", "courses you offer", "what courses", "age groups",
+            "different age group", "different age groups", "cater to different",
+            "cater different", "entry program", "entry programs", "for different class",
+            "for each class", "class wise program", "class-wise program",
+            "how will mathpath cater", "explain about the different programs",
+            "different programs you offer", "programs available"
+        ]
+    )
+
+    specifically_asks_full_progression = any(
+        phrase in text
+        for phrase in [
+            "full curriculum", "complete curriculum", "all levels", "entire program",
+            "start to end", "full progression", "intermediate", "master module",
+            "advanced level", "advanced levels", "after bridge", "after preparatory"
+        ]
+    )
+
+    return asks_about_programs and asks_for_overview and not specifically_asks_full_progression
+
+
 def _sanitize_answer(answer: str) -> str:
     """Remove AI placeholder text and keep answer compact."""
     if not answer:
@@ -189,6 +238,9 @@ def _fallback_answer(
     results: list[RetrievalResult],
     recommended_program: str | None,
 ) -> str:
+    if _contains_program_entry_question(message):
+        return PROGRAM_ENTRY_ANSWER
+
     if _contains_owner_question(message):
         if _contains_contact_question(message):
             return (
@@ -281,6 +333,7 @@ Response instructions:
 - If the user asks for centre/location/contact details, provide the exact official MathPath contact details.
 - If the user asks about fees, do not mention any fee amount. Ask them to contact the helpline.
 - If the user asks about timings, mention broad options only: weekdays from 5 PM and weekend morning/afternoon/evening batches.
+- For program overview / age-wise program / programs offered questions, answer only with the three entry programs: Young Learner, Preparatory Level 1, and Bridge Course. Do not include Intermediate Level or Master Module unless the user specifically asks about advanced/full progression levels.
 - Do not invent fees, timings, names, ownership details, guarantees, or offers.
 - Do not push demo booking unless the user shows admission/joining/demo/callback intent.
 """
@@ -299,6 +352,9 @@ def generate_answer(
     results: list[RetrievalResult],
     recommended_program: str | None = None,
 ) -> str:
+    if _contains_program_entry_question(message):
+        return PROGRAM_ENTRY_ANSWER
+
     settings = get_settings()
     client = _client()
 
@@ -346,6 +402,10 @@ def generate_answer_stream(
     results: list[RetrievalResult],
     recommended_program: str | None = None,
 ):
+    if _contains_program_entry_question(message):
+        yield from _stream_words(PROGRAM_ENTRY_ANSWER)
+        return
+
     settings = get_settings()
     client = _client()
 

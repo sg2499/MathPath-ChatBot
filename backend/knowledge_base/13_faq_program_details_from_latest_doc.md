@@ -19,7 +19,9 @@ Unlock your child's true maths potential with a unique hybrid learning experienc
 
 ## Q2. How does MathPath cater to different age groups?
 
-MathPath has different programs for different age groups and class levels.
+For enrolment/program-overview questions, the chatbot must show only these three entry programs. Intermediate Level and Master Module are later progression stages for enrolled students and should not be listed as separate entry programs unless the user specifically asks about full progression or advanced levels.
+
+MathPath has different entry programs for different age groups and class levels.
 
 ### Young Learner Program
 
@@ -128,3 +130,22 @@ Every level has a level-end assessment.
 Phone: 7980918759 / 9831684229  
 Email: info@mathpath.in  
 Location: Laxmi Apartment, 1st Floor, Dashadrone, Checkpost, Rajarhat Main Road, next to Urban Greens, above Vrindavan Sweets, Kolkata 700136.
+
+## Mandatory Bot Rule for Program Overview Questions
+
+If a user asks any version of:
+
+- What programs do you offer?
+- Explain the different programs.
+- How does MathPath cater to different age groups?
+- Which program is for which class?
+- What are the different courses?
+- What are the available programs?
+
+The answer must include only:
+
+1. Young Learner – UKG, Class 1, and Class 2; 10 months; foundational abacus operations; promotes to Preparatory Level 2.
+2. Preparatory Level 1 – Class 3 and Class 4; 4 months; visual and operational fluency; promotes to Preparatory Level 2.
+3. Bridge Course – Class 5 to Class 8 late joiners; 10–12 months; 4 levels clubbed into one level; promotes to Intermediate Level 1.
+
+Do not include Intermediate Level or Master Module in this answer unless the user specifically asks about full program progression, all levels, advanced levels, Intermediate Level, or Master Module.
