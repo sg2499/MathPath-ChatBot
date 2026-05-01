@@ -33,7 +33,7 @@ Add these in Render → Environment:
 ```env
 APP_ENV=production
 OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5.1-chat-latest
 ALLOWED_ORIGINS=https://your-vercel-chatbot-url.vercel.app,https://www.mathpath.in,https://mathpath.in
 ADMIN_API_KEY=use_a_long_random_secret
 TOP_K=5

@@ -1,5 +1,8 @@
 # MathPath AI Chatbot — Final Production-Ready Project
 
+> Final premium version: includes professional UI, concise commercial response style, updated MathPath FAQ knowledge base, controlled demo lead capture, and OpenAI model default `gpt-5.1-chat-latest`.
+
+
 This is the complete MathPath website chatbot package. It includes the knowledge base, Agentic RAG backend, React chatbot widget with ChatGPT-style streaming, lead capture, deployment files, website embed script, QA testing suite, and admin dashboard.
 
 ## What this bot is built to do
@@ -108,7 +111,7 @@ Backend `.env` important values:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5.1-chat-latest
 ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000,https://www.mathpath.in,https://mathpath.in
 ADMIN_API_KEY=change_this_admin_key
 LEADS_CSV_PATH=storage/leads.csv

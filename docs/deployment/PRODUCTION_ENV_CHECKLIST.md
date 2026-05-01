@@ -7,7 +7,7 @@ Required:
 ```env
 APP_ENV=production
 OPENAI_API_KEY=your_key
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5.1-chat-latest
 ALLOWED_ORIGINS=https://your-vercel-chatbot-url.vercel.app,https://www.mathpath.in,https://mathpath.in
 ADMIN_API_KEY=long_random_secret
 ```

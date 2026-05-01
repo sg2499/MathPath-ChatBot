@@ -11,7 +11,7 @@ services:
       - key: APP_ENV
         value: production
       - key: OPENAI_MODEL
-        value: gpt-4o-mini
+        value: gpt-5.1-chat-latest
       - key: TOP_K
         value: 5
       - key: MIN_RETRIEVAL_SCORE

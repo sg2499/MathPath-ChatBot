@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     app_name: str = Field(default="MathPath AI Chatbot Backend", alias="APP_NAME")
     app_env: str = Field(default="development", alias="APP_ENV")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
-    openai_model: str = Field(default="gpt-4o-mini", alias="OPENAI_MODEL")
+    openai_model: str = Field(default="gpt-5.1-chat-latest", alias="OPENAI_MODEL")
     allowed_origins: str = Field(
         default="http://localhost:5173,http://localhost:3000,https://www.mathpath.in,https://mathpath.in",
         alias="ALLOWED_ORIGINS",
