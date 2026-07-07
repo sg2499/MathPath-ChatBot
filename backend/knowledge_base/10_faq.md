@@ -62,7 +62,7 @@ Yes. The system supports parent feedback, progress tracking, report cards, and m
 
 ## Are fees available on the website?
 
-The bot should not invent fees. It should ask parents to contact the MathPath team for current fees, offers, and batch details.
+Yes. The registration fee is ₹1650 (One Time), the tuition fee is ₹1100 (Monthly), and there are level-specific content charges.
 
 ## Where is MathPath located?
 
