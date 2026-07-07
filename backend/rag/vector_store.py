@@ -44,12 +44,13 @@ class SupabaseVectorStore:
             if not query_embedding:
                 return []
                 
+            settings = get_settings()
             # Assume we have a Supabase RPC function named `match_documents`
             response = self.supabase.rpc(
                 'match_documents',
                 {
                     'query_embedding': query_embedding,
-                    'match_threshold': 0.7, # configurable
+                    'match_threshold': settings.min_retrieval_score,
                     'match_count': top_k
                 }
             ).execute()
