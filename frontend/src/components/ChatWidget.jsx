@@ -136,8 +136,16 @@ export default function ChatWidget() {
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
 
   const statusLabel = useMemo(() => isStreaming ? "Answering live" : "Online now", [isStreaming]);
+
+  const scrollSuggestions = (direction) => {
+    if (suggestionsRef.current) {
+      const scrollAmount = 200;
+      suggestionsRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -243,12 +251,16 @@ export default function ChatWidget() {
             </header>
 
             <div className="mp-chat-body premium">
-              <div className="mp-suggestions premium">
-                {QUICK_PROMPTS.map((prompt) => (
-                  <button key={prompt} className="mp-suggestion-chip premium" disabled={isStreaming} onClick={() => sendMessage(prompt)}>
-                    {prompt}
-                  </button>
-                ))}
+              <div className="mp-suggestions-container">
+                <button className="mp-scroll-btn left" onClick={() => scrollSuggestions('left')}>❮</button>
+                <div className="mp-suggestions premium" ref={suggestionsRef}>
+                  {QUICK_PROMPTS.map((prompt) => (
+                    <button key={prompt} className="mp-suggestion-chip premium" disabled={isStreaming} onClick={() => sendMessage(prompt)}>
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+                <button className="mp-scroll-btn right" onClick={() => scrollSuggestions('right')}>❯</button>
               </div>
 
               <div className="mp-message-list premium">
