@@ -1,0 +1,4 @@
+{
+  "summary":  "Rewrote rag_answer_agent to strictly use OpenAI with RAG context, removing 300+ lines of regex.",
+  "updatedAt":  "2026-07-07T07:47:57.300083100Z"
+}
