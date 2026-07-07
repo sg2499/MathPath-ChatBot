@@ -1,8 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 from pydantic import Field
-from pydantic_settings import BaseSettings
-
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = Field(default="MathPath AI Chatbot Backend", alias="APP_NAME")
@@ -34,10 +33,11 @@ class Settings(BaseSettings):
     top_k: int = Field(default=5, alias="TOP_K")
     min_retrieval_score: float = Field(default=0.08, alias="MIN_RETRIEVAL_SCORE")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        extra = "ignore"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
     @property
     def allowed_origin_list(self) -> list[str]:
