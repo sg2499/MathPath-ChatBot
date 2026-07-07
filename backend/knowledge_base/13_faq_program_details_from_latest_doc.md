@@ -20,9 +20,8 @@ The total MathPath journey is approximately 4 years, depending on the child’s 
 
 MathPath works on concentration, whole-brain development, visual memory, picture memory, number sense, calculation confidence, speed, accuracy, and regular practice habits. Numerical learning is used as a medium of training and communication.
 
-## Brain Spark / Brain Boost Happy Session
-
-Each class includes a 30-minute Brain Spark / Brain Boost happy session so children can learn maths in a fun way.
+## Brain Smart Happy
+Each class includes a 30-minute Brain Smart Happy session so children can learn maths in a fun way, focusing on memory, logic, and creativity.
 
 ## Class Frequency and Duration
 
