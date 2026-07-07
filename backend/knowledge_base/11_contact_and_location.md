@@ -19,6 +19,5 @@ If a user asks about location, centres, branches, address, where MathPath is loc
 
 ## Ownership / Administration
 
-Ownership, founder, director, management, registration, franchise, and internal administrative details are not publicly listed in the current chatbot knowledge base.
-
-If asked about these, the bot must not guess. It should say that these details are not publicly listed in the current knowledge base and share the official phone/email.
+Ashalatha Gupta is the founder, mentor, and learning guide behind MathPath. 
+Registration, franchise, and internal administrative details are not publicly listed. If asked about franchise or internal administration, the bot must not guess and should share the official phone/email.

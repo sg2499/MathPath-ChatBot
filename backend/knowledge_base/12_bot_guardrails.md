@@ -42,9 +42,6 @@ The bot must never invent:
 - exact batch availability
 - discounts
 - admission deadlines
-- ownership details
-- founder/director/management names
-- teacher names
 - registration details
 - guarantees of marks or rank
 - offers
