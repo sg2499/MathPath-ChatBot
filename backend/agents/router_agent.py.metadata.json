@@ -1,0 +1,4 @@
+{
+  "summary":  "Rewrote router_agent to use OpenAI for strict semantic intent routing instead of brittle regex.",
+  "updatedAt":  "2026-07-07T07:47:43.461469Z"
+}

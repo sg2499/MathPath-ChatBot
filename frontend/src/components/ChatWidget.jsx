@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sendChatMessage, streamChatMessage, submitLead } from "./api";
+import { motion, AnimatePresence } from "framer-motion";
 import "../styles/chatbot.css";
 
 const LOGO_SRC = "/MathPath-Logo.png";
@@ -17,8 +18,7 @@ const INITIAL_MESSAGES = [
   {
     id: "welcome",
     role: "bot",
-    text:
-      "Hi! I’m MathPath AI. I can help you choose the right MathPath Abacus program, explain our learning model, Bridge Course, class structure, assessments, and demo process. What would you like to know?",
+    text: "Hi! I’m MathPath AI. I can help you choose the right MathPath Abacus program, explain our learning model, Bridge Course, class structure, assessments, and demo process. What would you like to know?",
   },
 ];
 
@@ -28,12 +28,9 @@ function makeId(prefix = "msg") {
 
 function formatMessage(text) {
   if (!text) return null;
-
   const lines = text.split("\n").filter((line) => line.trim() !== "");
-
   return lines.map((line, index) => {
     const trimmed = line.trim();
-
     if (trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
       return (
         <div className="mp-bullet-line" key={`${trimmed}-${index}`}>
@@ -42,232 +39,112 @@ function formatMessage(text) {
         </div>
       );
     }
-
     return <p key={`${trimmed}-${index}`}>{trimmed}</p>;
   });
 }
 
 function shouldOpenLeadFormFromUser(text) {
   const value = text.toLowerCase();
-
-  // Open the lead form only when the user clearly asks for a demo, trial,
-  // callback, or direct call request. Normal questions about programs, fees,
-  // centres, class duration, or weak maths must not trigger the form.
   const directLeadPhrases = [
-    "book demo",
-    "book a demo",
-    "free demo",
-    "schedule demo",
-    "demo class",
-    "arrange demo",
-    "want a demo",
-    "need a demo",
-    "trial class",
-    "book a trial",
-    "callback",
-    "call me",
-    "please call",
+    "book demo", "book a demo", "free demo", "schedule demo", "demo class",
+    "arrange demo", "want a demo", "need a demo", "trial class", "book a trial",
+    "callback", "call me", "please call",
   ];
-
   return directLeadPhrases.some((phrase) => value.includes(phrase));
-}
-
-function isConversationClosing(text) {
-  const value = text.trim().toLowerCase();
-  return [
-    "thanks",
-    "thank you",
-    "ok thanks",
-    "okay thanks",
-    "that's all",
-    "thats all",
-    "no thanks",
-    "done",
-    "got it",
-  ].some((phrase) => value === phrase || value.includes(phrase));
 }
 
 function LeadForm({ onCancel, onSuccess }) {
   const [form, setForm] = useState({
-    parent_name: "",
-    child_name: "",
-    child_age: "",
-    child_class: "",
-    phone: "",
-    email: "",
-    preferred_mode: "Not sure",
-    main_concern: "",
-    preferred_callback_time: "",
-    consent: true,
+    parent_name: "", child_name: "", child_age: "", child_class: "", phone: "",
+    email: "", preferred_mode: "Not sure", main_concern: "", preferred_callback_time: "", consent: true,
   });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
 
-  const updateField = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
+  const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
-
     if (!form.parent_name.trim() || !form.phone.trim()) {
       setError("Please enter parent name and phone number.");
       return;
     }
-
     if (!form.consent) {
       setError("Please confirm consent so the MathPath team can contact you.");
       return;
     }
-
     try {
       setStatus("submitting");
-      const result = await submitLead({
-        parent_name: form.parent_name,
-        child_name: form.child_name,
-        child_age: form.child_age,
-        child_class: form.child_class,
-        phone: form.phone,
-        email: form.email,
-        preferred_mode: form.preferred_mode,
-        main_concern: form.main_concern,
-        preferred_callback_time: form.preferred_callback_time,
-        consent: form.consent,
-        source: "MathPath AI Chatbot",
-      });
+      const result = await submitLead({ ...form, source: "MathPath AI Chatbot" });
       setStatus("success");
       onSuccess(result?.lead_id || result?.reference_id || "submitted");
     } catch {
       setStatus("idle");
-      setError("Unable to submit right now. Please call 7980918759 / 9831684229.");
+      setError("Unable to submit right now. Please call 7980918759.");
     }
   };
 
   return (
-    <form className="mp-lead-card" onSubmit={handleSubmit}>
+    <motion.form 
+      className="mp-lead-card" 
+      onSubmit={handleSubmit}
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+    >
       <div className="mp-lead-card-header">
         <div>
-          <span className="mp-eyebrow">Free guidance</span>
           <h4>Book a Demo / Callback</h4>
         </div>
-        <button type="button" className="mp-icon-button muted" onClick={onCancel} aria-label="Close form">
-          ×
-        </button>
+        <button type="button" className="mp-icon-button muted" onClick={onCancel}>×</button>
       </div>
-
       <div className="mp-form-row">
-        <input
-          value={form.parent_name}
-          onChange={(e) => updateField("parent_name", e.target.value)}
-          placeholder="Parent name *"
-        />
-        <input
-          value={form.child_name}
-          onChange={(e) => updateField("child_name", e.target.value)}
-          placeholder="Child name"
-        />
+        <input value={form.parent_name} onChange={(e) => updateField("parent_name", e.target.value)} placeholder="Parent name *" />
+        <input value={form.child_name} onChange={(e) => updateField("child_name", e.target.value)} placeholder="Child name" />
       </div>
-
       <div className="mp-form-row two">
-        <input
-          value={form.child_age}
-          onChange={(e) => updateField("child_age", e.target.value)}
-          placeholder="Age"
-        />
-        <input
-          value={form.child_class}
-          onChange={(e) => updateField("child_class", e.target.value)}
-          placeholder="Class"
-        />
+        <input value={form.child_age} onChange={(e) => updateField("child_age", e.target.value)} placeholder="Age" />
+        <input value={form.child_class} onChange={(e) => updateField("child_class", e.target.value)} placeholder="Class" />
       </div>
-
-      <input
-        value={form.phone}
-        onChange={(e) => updateField("phone", e.target.value)}
-        placeholder="Phone number *"
-      />
-      <input
-        value={form.email}
-        onChange={(e) => updateField("email", e.target.value)}
-        placeholder="Email"
-      />
-
+      <input value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="Phone number *" />
+      <input value={form.email} onChange={(e) => updateField("email", e.target.value)} placeholder="Email" />
       <select value={form.preferred_mode} onChange={(e) => updateField("preferred_mode", e.target.value)}>
-        <option>Not sure</option>
-        <option>Offline</option>
-        <option>Online</option>
-        <option>Hybrid</option>
+        <option>Not sure</option><option>Offline</option><option>Online</option><option>Hybrid</option>
       </select>
-
-      <input
-        value={form.main_concern}
-        onChange={(e) => updateField("main_concern", e.target.value)}
-        placeholder="Main concern: basics, speed, school maths"
-      />
-      <input
-        value={form.preferred_callback_time}
-        onChange={(e) => updateField("preferred_callback_time", e.target.value)}
-        placeholder="Preferred callback time"
-      />
-
+      <input value={form.main_concern} onChange={(e) => updateField("main_concern", e.target.value)} placeholder="Main concern: basics, speed, school maths" />
       <label className="mp-consent-row">
-        <input
-          type="checkbox"
-          checked={form.consent}
-          onChange={(e) => updateField("consent", e.target.checked)}
-        />
+        <input type="checkbox" checked={form.consent} onChange={(e) => updateField("consent", e.target.checked)} />
         <span>I agree to be contacted by MathPath for demo class and admission guidance.</span>
       </label>
-
-      {error ? <p className="mp-form-error">{error}</p> : null}
-
+      {error && <p className="mp-form-error">{error}</p>}
       <button type="submit" className="mp-primary-button" disabled={status === "submitting"}>
         {status === "submitting" ? "Submitting..." : "Submit Details"}
       </button>
-    </form>
+    </motion.form>
   );
 }
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [leadSuccessId, setLeadSuccessId] = useState("");
-  const [showClosingCta, setShowClosingCta] = useState(false);
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  const hasConversation = messages.length > 1;
-
-  const resetChat = () => {
-    setMessages(INITIAL_MESSAGES);
-    setInput("");
-    setError("");
-    setShowLeadForm(false);
-    setLeadSuccessId("");
-    setShowClosingCta(false);
-    setIsStreaming(false);
-    setTimeout(() => inputRef.current?.focus(), 100);
-  };
-
-  const statusLabel = useMemo(() => {
-    if (isStreaming) return "Answering live";
-    return "Online now";
-  }, [isStreaming]);
+  const statusLabel = useMemo(() => isStreaming ? "Answering live" : "Online now", [isStreaming]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, isStreaming, showLeadForm, leadSuccessId, showClosingCta]);
+  }, [messages, isStreaming, showLeadForm, leadSuccessId]);
 
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 150);
-    }
+    if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
   }, [isOpen]);
 
   const sendMessage = async (messageText = input) => {
@@ -276,7 +153,6 @@ export default function ChatWidget() {
 
     setInput("");
     setError("");
-    setShowClosingCta(false);
     setLeadSuccessId("");
 
     const userMessage = { id: makeId("user"), role: "user", text: trimmed };
@@ -290,39 +166,21 @@ export default function ChatWidget() {
       setShowLeadForm(true);
     }
 
-    if (isConversationClosing(trimmed)) {
-      setShowClosingCta(true);
-    }
-
     try {
       let finalText = "";
       await streamChatMessage(trimmed, (_chunk, fullText) => {
         finalText = fullText;
-        setMessages((prev) =>
-          prev.map((msg) => (msg.id === botMessageId ? { ...msg, text: fullText } : msg))
-        );
+        setMessages((prev) => prev.map((msg) => (msg.id === botMessageId ? { ...msg, text: fullText } : msg)));
       });
 
       if (!finalText.trim()) {
         const fallback = await sendChatMessage(trimmed);
         finalText = fallback?.answer || fallback?.response || "I’m sorry, I could not generate an answer right now.";
-        setMessages((prev) =>
-          prev.map((msg) => (msg.id === botMessageId ? { ...msg, text: finalText } : msg))
-        );
+        setMessages((prev) => prev.map((msg) => (msg.id === botMessageId ? { ...msg, text: finalText } : msg)));
       }
     } catch {
       setError("I’m having trouble connecting to the MathPath AI server. Please make sure the backend is running.");
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === botMessageId
-            ? {
-                ...msg,
-                text:
-                  "I’m unable to connect to the chatbot backend right now. You can still contact MathPath directly at 7980918759 / 9831684229 or email info@mathpath.in.",
-              }
-            : msg
-        )
-      );
+      setMessages((prev) => prev.map((msg) => msg.id === botMessageId ? { ...msg, text: "I’m unable to connect to the chatbot backend right now. You can still contact MathPath directly at 7980918759." } : msg));
     } finally {
       setIsStreaming(false);
     }
@@ -335,160 +193,129 @@ export default function ChatWidget() {
     }
   };
 
-  if (!isOpen) {
-    return (
-      <div className="mp-chatbot-root">
-        <button className="mp-premium-launcher" onClick={() => setIsOpen(true)} aria-label="Open MathPath AI chatbot">
-          <span className="mp-launcher-orb">
-            <img src={LOGO_SRC} alt="MathPath" />
-          </span>
-          <span className="mp-launcher-copy">
-            <strong>Ask MathPath AI</strong>
-            <small>Program guidance • Demo help</small>
-          </span>
-          <span className="mp-launcher-pulse" />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className={`mp-chatbot-root ${isExpanded ? "expanded" : ""}`}>
-      <section className="mp-chat-window premium" aria-label="MathPath AI chatbot">
-        <header className="mp-chat-header premium">
-          <div className="mp-chat-brand premium">
-            <div className="mp-logo-shell">
-              <img src={LOGO_SRC} alt="MathPath" />
-            </div>
-            <div>
-              <div className="mp-title-row">
-                <strong>MathPath AI</strong>
-                <span className="mp-status-dot" />
-              </div>
-              <span className="mp-subtitle">{statusLabel}</span>
-            </div>
-          </div>
+    <div className="mp-chatbot-root">
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button 
+            className="mp-premium-launcher" 
+            onClick={() => setIsOpen(true)}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="mp-launcher-orb"><img src={LOGO_SRC} alt="MathPath" /></span>
+            <span className="mp-launcher-copy">
+              <strong>Ask MathPath AI</strong>
+              <small>Program guidance &bull; Demo help</small>
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-          <div className="mp-chat-actions premium">
-            <button className="mp-icon-button" onClick={resetChat} aria-label="Start a new chat" title="Start a new chat">
-              ↻
-            </button>
-            <button className="mp-icon-button" onClick={() => setShowLeadForm((prev) => !prev)} aria-label="Book demo" title="Book a demo">
-              ♡
-            </button>
-            <button className="mp-icon-button" onClick={() => setIsExpanded((prev) => !prev)} aria-label="Expand chat" title="Expand chat">
-              {isExpanded ? "↙" : "↗"}
-            </button>
-            <button className="mp-icon-button" onClick={() => setIsOpen(false)} aria-label="Close chat" title="Close chat">
-              ×
-            </button>
-          </div>
-        </header>
-
-        <div className="mp-chat-body premium">
-          <div className="mp-suggestions premium">
-            {QUICK_PROMPTS.map((prompt) => (
-              <button
-                type="button"
-                className="mp-suggestion-chip premium"
-                key={prompt}
-                disabled={isStreaming}
-                onClick={() => sendMessage(prompt)}
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-
-          <div className="mp-message-list premium">
-            {!hasConversation ? (
-              <div className="mp-start-panel">
-                <span className="mp-eyebrow">MathPath guidance assistant</span>
-                <h3>Find the right learning path in seconds.</h3>
-                <p>
-                  Ask about programs, age groups, Bridge Course, class duration, daily practice, assessments, or demo booking.
-                </p>
-              </div>
-            ) : null}
-
-            {messages.map((message, index) => {
-              const isLast = index === messages.length - 1;
-              const showCursor = isStreaming && message.role === "bot" && isLast;
-
-              return (
-                <div className={`mp-message-row ${message.role}`} key={message.id}>
-                  {message.role === "bot" ? (
-                    <img className="mp-message-avatar premium" src={LOGO_SRC} alt="MathPath" />
-                  ) : null}
-
-                  <div className={`mp-message-bubble premium ${message.role}`}>
-                    {message.text ? formatMessage(message.text) : <span className="mp-thinking-text">Thinking...</span>}
-                    {showCursor ? <span className="mp-streaming-cursor" /> : null}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.section 
+            className="mp-chat-window premium"
+            initial={{ opacity: 0, y: 40, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: 40, scale: 0.95, filter: "blur(10px)" }}
+            transition={{ type: "spring", stiffness: 260, damping: 25 }}
+          >
+            <header className="mp-chat-header premium">
+              <div className="mp-chat-brand premium">
+                <div className="mp-logo-shell"><img src={LOGO_SRC} alt="MathPath" /></div>
+                <div>
+                  <div className="mp-title-row">
+                    <strong>MathPath AI</strong>
+                    <span className="mp-status-dot" />
                   </div>
-                </div>
-              );
-            })}
-
-            {isStreaming ? (
-              <div className="mp-typing premium" aria-label="MathPath AI is typing">
-                <span />
-                <span />
-                <span />
-              </div>
-            ) : null}
-
-            {showClosingCta && !showLeadForm ? (
-              <div className="mp-conversation-cta premium">
-                <p>Would you like to ask anything else, or should I help you book a free MathPath demo?</p>
-                <div className="mp-conversation-cta-actions">
-                  <button type="button" onClick={() => setShowLeadForm(true)}>
-                    Book free demo
-                  </button>
-                  <button type="button" className="secondary" onClick={() => setShowClosingCta(false)}>
-                    Ask another question
-                  </button>
+                  <span className="mp-subtitle">{statusLabel}</span>
                 </div>
               </div>
-            ) : null}
+              <div className="mp-chat-actions premium">
+                <button className="mp-icon-button" onClick={() => setMessages(INITIAL_MESSAGES)}>↻</button>
+                <button className="mp-icon-button" onClick={() => setShowLeadForm(!showLeadForm)}>♡</button>
+                <button className="mp-icon-button" onClick={() => setIsOpen(false)}>×</button>
+              </div>
+            </header>
 
-            {showLeadForm ? (
-              <LeadForm
-                onCancel={() => setShowLeadForm(false)}
-                onSuccess={(id) => {
-                  setShowLeadForm(false);
-                  setLeadSuccessId(id);
-                }}
+            <div className="mp-chat-body premium">
+              <div className="mp-suggestions premium">
+                {QUICK_PROMPTS.map((prompt) => (
+                  <button key={prompt} className="mp-suggestion-chip premium" disabled={isStreaming} onClick={() => sendMessage(prompt)}>
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mp-message-list premium">
+                {messages.length === 1 && (
+                  <motion.div className="mp-start-panel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                    <span className="mp-eyebrow">MathPath guidance assistant</span>
+                    <h3>Find the right learning path in seconds.</h3>
+                    <p>Ask about programs, age groups, Bridge Course, class duration, daily practice, assessments, or demo booking.</p>
+                  </motion.div>
+                )}
+
+                <AnimatePresence initial={false}>
+                  {messages.map((message, index) => {
+                    const isLast = index === messages.length - 1;
+                    const showCursor = isStreaming && message.role === "bot" && isLast;
+                    return (
+                      <motion.div 
+                        className={`mp-message-row ${message.role}`} 
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      >
+                        {message.role === "bot" && <img className="mp-message-avatar premium" src={LOGO_SRC} alt="MathPath" />}
+                        <div className={`mp-message-bubble premium ${message.role}`}>
+                          {message.text ? formatMessage(message.text) : <span className="mp-thinking-text">Thinking...</span>}
+                          {showCursor && <span className="mp-streaming-cursor" />}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+
+                {isStreaming && (
+                  <motion.div className="mp-typing premium" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <span /><span /><span />
+                  </motion.div>
+                )}
+
+                <AnimatePresence>
+                  {showLeadForm && (
+                    <LeadForm onCancel={() => setShowLeadForm(false)} onSuccess={(id) => { setShowLeadForm(false); setLeadSuccessId(id); }} />
+                  )}
+                </AnimatePresence>
+
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+
+            <footer className="mp-chat-footer premium">
+              <textarea
+                ref={inputRef}
+                value={input}
+                rows={1}
+                placeholder="Message MathPath AI..."
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
-            ) : null}
-
-            {leadSuccessId ? (
-              <div className="mp-lead-success premium">
-                <strong>Thank you. Your request has been captured.</strong>
-                <span>The MathPath team will contact you shortly.</span>
-                <small>Reference: {leadSuccessId}</small>
-              </div>
-            ) : null}
-
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-
-        {error ? <div className="mp-chat-error premium">{error}</div> : null}
-
-        <footer className="mp-chat-footer premium">
-          <textarea
-            ref={inputRef}
-            value={input}
-            rows={1}
-            placeholder="Ask about MathPath programs, Bridge Course, daily practice, demo class..."
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <button type="button" onClick={() => sendMessage()} disabled={isStreaming || !input.trim()} aria-label="Send message">
-            ➤
-          </button>
-        </footer>
-      </section>
+              <button type="button" onClick={() => sendMessage()} disabled={isStreaming || !input.trim()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />
+                </svg>
+              </button>
+            </footer>
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

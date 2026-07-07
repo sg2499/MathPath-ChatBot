@@ -1,31 +1,42 @@
-import re
-
-
-INTENT_KEYWORDS = {
-    "demo_booking": ["book demo", "free demo", "schedule demo", "demo class", "trial class", "callback", "call me"],
-    "fees": ["fee", "fees", "cost", "price", "charges", "payment"],
-    "contact_location": ["contact", "phone", "email", "location", "address", "where", "near", "centre", "center", "branch"],
-    "program_recommendation": ["age", "class", "grade", "which program", "which level", "suitable", "recommend", "right for my child"],
-    "bridge_course": ["bridge", "late", "class 5", "class 6", "class 7", "class 8", "older child", "too late"],
-    "school_math": ["school", "cbse", "icse", "state board", "wbseb", "syllabus", "exam", "homework"],
-    "parent_concern": ["weak", "fear", "scared", "hate", "slow", "mistakes", "confidence", "basics", "struggle"],
-    "program_details": ["program", "course", "curriculum", "level", "duration", "young learner", "preparatory", "intermediate", "master"],
-    "assessment": ["assessment", "certificate", "certification", "promotion", "competition"],
-}
-
+import os
+from openai import OpenAI
+from config import get_settings
 
 def route_intent(message: str) -> str:
-    text = message.lower()
-    scores: dict[str, int] = {}
-    for intent, keywords in INTENT_KEYWORDS.items():
-        scores[intent] = sum(1 for keyword in keywords if keyword in text)
+    """Use an LLM to accurately determine the intent of the user's message."""
+    settings = get_settings()
+    if not settings.openai_api_key or settings.openai_api_key == "your_openai_api_key_here":
+        return "general_query"
+        
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    prompt = f"""You are a router agent for the MathPath Abacus Chatbot.
+Based on the user's message, classify the intent into ONE of the following categories. 
+Reply ONLY with the exact string of the category name, nothing else.
 
-    best_intent, best_score = max(scores.items(), key=lambda item: item[1])
-    if best_score > 0:
-        return best_intent
+Categories:
+- demo_booking (user wants to book a free demo, schedule a trial, or requests a callback)
+- fees (user asks about pricing, cost, or fees)
+- contact_location (user asks where it is, phone numbers, or addresses)
+- program_recommendation (user provides child age/class and wants to know the right program)
+- bridge_course (user asks about late joining or bridge course for older kids)
+- parent_concern (user says child is weak in math, scared of math, or needs help with basics)
+- general_query (anything else about the program structure, duration, apps, or competitions)
 
-    if re.search(r"\b[5-9]\s*(years|yrs|year old|yr old)\b", text):
-        return "program_recommendation"
-    if re.search(r"\b(class|grade|std|standard)\s*[1-8]\b", text):
-        return "program_recommendation"
-    return "general_query"
+User message: "{message}"
+Intent:"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.0,
+            max_tokens=10
+        )
+        intent = response.choices[0].message.content.strip().lower()
+        valid_intents = ["demo_booking", "fees", "contact_location", "program_recommendation", "bridge_course", "parent_concern", "general_query"]
+        if intent in valid_intents:
+            return intent
+        return "general_query"
+    except Exception:
+        return "general_query"

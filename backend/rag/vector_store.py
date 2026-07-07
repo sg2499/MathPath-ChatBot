@@ -1,8 +1,8 @@
+import os
 from dataclasses import dataclass
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from .document_loader import DocumentChunk
-
+from supabase import create_client, Client
+from openai import OpenAI
+from config import get_settings
 
 @dataclass
 class RetrievalResult:
@@ -10,31 +10,60 @@ class RetrievalResult:
     text: str
     score: float
 
+class SupabaseVectorStore:
+    """Production retrieval using Supabase pgvector and OpenAI embeddings."""
 
-class LocalTfidfVectorStore:
-    """Lightweight local retrieval for Step 2.
+    def __init__(self):
+        settings = get_settings()
+        supabase_url = os.environ.get("SUPABASE_URL", "")
+        supabase_key = os.environ.get("SUPABASE_SERVICE_KEY", "")
+        
+        self.supabase: Client | None = None
+        if supabase_url and supabase_key:
+            self.supabase = create_client(supabase_url, supabase_key)
+            
+        self.openai_client = None
+        if settings.openai_api_key and settings.openai_api_key != "your_openai_api_key_here":
+            self.openai_client = OpenAI(api_key=settings.openai_api_key)
 
-    This keeps the first backend simple and reliable. Later, it can be replaced
-    with Chroma, FAISS, Supabase pgvector, or OpenAI embeddings without changing
-    the public API.
-    """
-
-    def __init__(self, documents: list[DocumentChunk]):
-        self.documents = documents
-        self.vectorizer = TfidfVectorizer(stop_words="english", ngram_range=(1, 2))
-        self.matrix = self.vectorizer.fit_transform([doc.text for doc in documents])
+    def _get_embedding(self, text: str) -> list[float]:
+        if not self.openai_client:
+            return []
+        response = self.openai_client.embeddings.create(
+            input=text,
+            model="text-embedding-3-small"
+        )
+        return response.data[0].embedding
 
     def search(self, query: str, top_k: int = 5) -> list[RetrievalResult]:
-        if not query.strip():
+        if not query.strip() or not self.supabase or not self.openai_client:
             return []
-        query_vector = self.vectorizer.transform([query])
-        scores = cosine_similarity(query_vector, self.matrix).flatten()
-        ranked_indices = scores.argsort()[::-1][:top_k]
-        return [
-            RetrievalResult(
-                source=self.documents[i].source,
-                text=self.documents[i].text,
-                score=float(scores[i]),
-            )
-            for i in ranked_indices
-        ]
+            
+        try:
+            query_embedding = self._get_embedding(query)
+            if not query_embedding:
+                return []
+                
+            # Assume we have a Supabase RPC function named `match_documents`
+            response = self.supabase.rpc(
+                'match_documents',
+                {
+                    'query_embedding': query_embedding,
+                    'match_threshold': 0.7, # configurable
+                    'match_count': top_k
+                }
+            ).execute()
+            
+            results = []
+            for item in response.data:
+                results.append(
+                    RetrievalResult(
+                        source=item.get("metadata", {}).get("source", "Unknown"),
+                        text=item.get("content", ""),
+                        score=item.get("similarity", 0.0)
+                    )
+                )
+            return results
+        except Exception as e:
+            print(f"Vector search failed: {e}")
+            return []

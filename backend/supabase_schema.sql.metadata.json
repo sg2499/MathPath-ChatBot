@@ -1,0 +1,4 @@
+{
+  "summary":  "Updated supabase schema to include pgvector extension, documents table for embeddings, and RPC matching function.",
+  "updatedAt":  "2026-07-07T07:48:27.805616800Z"
+}
