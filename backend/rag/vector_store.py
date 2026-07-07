@@ -15,8 +15,8 @@ class SupabaseVectorStore:
 
     def __init__(self):
         settings = get_settings()
-        supabase_url = os.environ.get("SUPABASE_URL", "")
-        supabase_key = os.environ.get("SUPABASE_SERVICE_KEY", "")
+        supabase_url = settings.supabase_url
+        supabase_key = settings.supabase_service_role_key
         
         self.supabase: Client | None = None
         if supabase_url and supabase_key:
