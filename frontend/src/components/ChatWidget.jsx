@@ -3,7 +3,7 @@ import { sendChatMessage, streamChatMessage, submitLead } from "./api";
 import { motion, AnimatePresence } from "framer-motion";
 import "../styles/chatbot.css";
 
-const LOGO_SRC = "/MathPath-Logo.png";
+const LOGO_SRC = "/mathpath-logo-new.png";
 
 const QUICK_PROMPTS = [
   "Which program is right for my child?",

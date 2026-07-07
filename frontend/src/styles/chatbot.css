@@ -77,17 +77,18 @@ button {
 }
 
 .mp-launcher-orb {
-  width: 52px;
-  height: 52px;
+  width: auto;
+  height: 48px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 14px;
   background: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 .mp-launcher-orb img {
-  width: 32px;
+  width: 80px;
   height: auto;
 }
 
@@ -146,8 +147,9 @@ button {
   gap: 12px;
 }
 .mp-logo-shell {
-  width: 48px;
+  width: auto;
   height: 48px;
+  padding: 0 12px;
   background: white;
   border-radius: 14px;
   display: flex;
@@ -157,7 +159,8 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 .mp-logo-shell img {
-  width: 32px;
+  width: 80px;
+  height: auto;
   object-fit: contain;
 }
 .mp-title-row {
@@ -317,12 +320,13 @@ button {
 }
 
 .mp-message-avatar.premium {
-  width: 32px;
+  width: auto;
   height: 32px;
   background: white;
   border-radius: 10px;
-  padding: 4px;
+  padding: 4px 8px;
   box-shadow: var(--mp-shadow-sm);
+  object-fit: contain;
 }
 
 .mp-message-bubble.premium {
