@@ -493,5 +493,82 @@ button {
   .mp-chat-window.premium {
     width: calc(100vw - 32px);
     height: calc(100vh - 32px);
+}
+
+/* =========================================
+   DEMO PAGE STYLES (Standalone Landing)
+   ========================================= */
+.mathpath-demo-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #fff, #f8fafc 40%, #eff6ff 100%);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mathpath-demo-page::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(255, 63, 127, 0.05) 0%, rgba(255, 63, 127, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mathpath-demo-hero {
+  max-width: 720px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 60px 40px;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 30px 60px -12px rgba(26, 28, 59, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.mathpath-demo-logo {
+  width: 220px;
+  margin-bottom: 32px;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.05));
+}
+
+.mathpath-demo-hero h1 {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 24px;
+  background: linear-gradient(135deg, var(--mp-navy) 0%, var(--mp-blue-deep) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mathpath-demo-hero p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--mp-muted);
+  margin: 0 auto;
+  max-width: 600px;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .mathpath-demo-hero {
+    padding: 40px 20px;
+  }
+  .mathpath-demo-hero h1 {
+    font-size: 40px;
+  }
+  .mathpath-demo-hero p {
+    font-size: 18px;
   }
 }
+
