@@ -29,7 +29,7 @@ MathPath provides one class per week. Each class is 2 hours long. Monthly 4 clas
 
 ## Fee Structure
 
-For the latest fee structure, users should contact the MathPath helpline at 7980918759 / 9831684229.
+The registration fee is ₹1650 (One Time), the tuition fee is ₹1100 (Monthly), and there are level-specific content charges (charged at the start of each level). Users can also contact the MathPath helpline at 7980918759 / 9831684229 for more details.
 
 ## Batch Size
 

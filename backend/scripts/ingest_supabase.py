@@ -13,10 +13,10 @@ from openai import OpenAI
 def ingest():
     settings = get_settings()
     
-    supabase_url = os.environ.get("SUPABASE_URL")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_KEY")
+    supabase_url = settings.supabase_url
+    supabase_key = settings.supabase_service_role_key
     if not supabase_url or not supabase_key:
-        print("Error: SUPABASE_URL or SUPABASE_SERVICE_KEY environment variables missing.")
+        print("Error: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing from settings.")
         return
 
     if not settings.openai_api_key or settings.openai_api_key == "your_openai_api_key_here":
