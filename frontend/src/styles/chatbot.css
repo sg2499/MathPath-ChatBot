@@ -354,6 +354,19 @@ button {
 .mp-message-bubble.premium p:last-child {
   margin: 0;
 }
+.mp-message-bubble.premium ul, .mp-message-bubble.premium ol {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+.mp-message-bubble.premium li {
+  margin-bottom: 4px;
+}
+.mp-message-bubble.premium strong {
+  font-weight: 700;
+}
+.mp-message-bubble.premium em {
+  font-style: italic;
+}
 .mp-bullet-line {
   display: flex;
   gap: 8px;

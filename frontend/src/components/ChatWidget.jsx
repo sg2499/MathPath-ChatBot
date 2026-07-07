@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sendChatMessage, streamChatMessage, submitLead } from "./api";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import "../styles/chatbot.css";
 
 const LOGO_SRC = "/mathpath-logo-new.png";
@@ -28,19 +29,7 @@ function makeId(prefix = "msg") {
 
 function formatMessage(text) {
   if (!text) return null;
-  const lines = text.split("\n").filter((line) => line.trim() !== "");
-  return lines.map((line, index) => {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
-      return (
-        <div className="mp-bullet-line" key={`${trimmed}-${index}`}>
-          <span>•</span>
-          <p>{trimmed.replace(/^[-•]\s*/, "")}</p>
-        </div>
-      );
-    }
-    return <p key={`${trimmed}-${index}`}>{trimmed}</p>;
-  });
+  return <ReactMarkdown>{text}</ReactMarkdown>;
 }
 
 function shouldOpenLeadFormFromUser(text) {

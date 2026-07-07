@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+
 export default function ChatMessage({ message }) {
   const isBot = message.role === "assistant";
   const content = message.content || "";
@@ -7,7 +9,7 @@ export default function ChatMessage({ message }) {
       {isBot && <img src="/MathPath-Logo.png" alt="MathPath" className="mp-message-avatar" />}
       <div className={`mp-message-bubble ${isBot ? "bot" : "user"}`}>
         {content ? (
-          content.split("\n").map((line, index) => <p key={`${index}-${line.slice(0, 20)}`}>{line || " "}</p>)
+          <ReactMarkdown>{content}</ReactMarkdown>
         ) : (
           <p> </p>
         )}
