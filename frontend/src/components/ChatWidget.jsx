@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import "../styles/chatbot.css";
 
-const LOGO_SRC = "/mathpath-logo-new.png";
+const LOGO_SRC = "https://math-path-chat-bot.vercel.app/mathpath-logo-new.png";
 
 const QUICK_PROMPTS = [
   "Which program is right for my child?",
