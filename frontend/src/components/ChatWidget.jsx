@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import "../styles/chatbot.css";
 
-const LOGO_SRC = "https://math-path-chat-bot.vercel.app/mathpath-logo-new.png";
+const LOGO_SRC = "https://math-path-chat-bot.vercel.app/milo-avatar.jpg";
 
 const QUICK_PROMPTS = [
   "Which program is right for my child?",
@@ -19,7 +19,7 @@ const INITIAL_MESSAGES = [
   {
     id: "welcome",
     role: "bot",
-    text: "Hi! I’m MathPath AI. I can help you choose the right MathPath Abacus program, explain our learning model, Bridge Course, class structure, assessments, and demo process. What would you like to know?",
+    text: "Hi! I’m Milo, the MathPath monkey mascot. 🐒 I can help you choose the right MathPath Abacus program, explain our learning model, Bridge Course, class structure, and demo process. What would you like to know?",
   },
 ];
 
@@ -205,7 +205,7 @@ export default function ChatWidget() {
           >
             <span className="mp-launcher-orb"><img src={LOGO_SRC} alt="MathPath" /></span>
             <span className="mp-launcher-copy">
-              <strong>Ask MathPath AI</strong>
+              <strong>Chat with Milo</strong>
               <small>Program guidance &bull; Demo help</small>
             </span>
           </motion.button>
@@ -226,7 +226,7 @@ export default function ChatWidget() {
                 <div className="mp-logo-shell"><img src={LOGO_SRC} alt="MathPath" /></div>
                 <div>
                   <div className="mp-title-row">
-                    <strong>MathPath AI</strong>
+                    <strong>Milo (MathPath AI)</strong>
                     <span className="mp-status-dot" />
                   </div>
                   <span className="mp-subtitle">{statusLabel}</span>
@@ -255,8 +255,8 @@ export default function ChatWidget() {
               <div className="mp-message-list premium">
                 {messages.length === 1 && (
                   <motion.div className="mp-start-panel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                    <span className="mp-eyebrow">MathPath guidance assistant</span>
-                    <h3>Find the right learning path in seconds.</h3>
+                    <span className="mp-eyebrow">Your friendly math assistant</span>
+                    <h3>Chat with Milo to find the perfect learning path.</h3>
                     <p>Ask about programs, age groups, Bridge Course, class duration, daily practice, assessments, or demo booking.</p>
                   </motion.div>
                 )}
