@@ -1,7 +1,7 @@
-const API_BASE_URL =
-  import.meta.env.VITE_MATHPATH_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:8000";
+let API_BASE_URL = import.meta.env.VITE_MATHPATH_API_URL || import.meta.env.VITE_API_BASE_URL;
+if (!API_BASE_URL || API_BASE_URL.includes("mathpath-ai-chatbot-backend")) {
+  API_BASE_URL = import.meta.env.DEV ? "http://localhost:8000" : "https://mathpath-chatbot.onrender.com";
+}
 
 export async function sendChatMessage(message) {
   const response = await fetch(`${API_BASE_URL}/chat`, {
