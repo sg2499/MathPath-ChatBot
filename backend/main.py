@@ -22,9 +22,19 @@ settings = get_settings()
 app = FastAPI(title=settings.app_name, version="1.1.0")
 app.include_router(admin_dashboard_router)
 
+# Ensure critical origins are always allowed regardless of environment variable overrides
+critical_origins = [
+    "https://math-path-chat-bot.vercel.app",
+    "https://www.mathpath.in",
+    "https://mathpath.in",
+    "http://localhost:5173",
+    "http://localhost:3000"
+]
+combined_origins = list(set(settings.allowed_origin_list + critical_origins))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origin_list,
+    allow_origins=combined_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
