@@ -29,9 +29,9 @@ class Settings(BaseSettings):
     # Simple admin protection for lead export endpoints
     admin_api_key: str = Field(default="change_this_admin_key", alias="ADMIN_API_KEY")
 
-    # Retrieval settings
-    top_k: int = Field(default=5, alias="TOP_K")
-    min_retrieval_score: float = Field(default=0.08, alias="MIN_RETRIEVAL_SCORE")
+    # Retrieval settings - We pass the entire KB (~40kb) into context to ensure 100% accuracy on varied questions
+    top_k: int = Field(default=50, alias="TOP_K")
+    min_retrieval_score: float = Field(default=0.0, alias="MIN_RETRIEVAL_SCORE")
 
     model_config = SettingsConfigDict(
         env_file=".env",
