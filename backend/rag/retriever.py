@@ -1,10 +1,10 @@
 from functools import lru_cache
 from config import get_settings
-from .vector_store import SupabaseVectorStore, RetrievalResult
+from .vector_store import LocalVectorStore, RetrievalResult
 
 @lru_cache
-def get_vector_store() -> SupabaseVectorStore:
-    return SupabaseVectorStore()
+def get_vector_store() -> LocalVectorStore:
+    return LocalVectorStore()
 
 def retrieve_context(query: str, top_k: int | None = None) -> list[RetrievalResult]:
     settings = get_settings()
