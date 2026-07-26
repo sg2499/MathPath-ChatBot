@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-5.1-chat-latest", alias="OPENAI_MODEL")
     allowed_origins: str = Field(
-        default="http://localhost:5173,http://localhost:3000,https://www.mathpath.in,https://mathpath.in",
+        default="http://localhost:5173,http://localhost:3000,https://www.mathpath.in,https://mathpath.in,https://math-path-chat-bot.vercel.app",
         alias="ALLOWED_ORIGINS",
     )
 
